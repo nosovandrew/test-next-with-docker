@@ -3,6 +3,8 @@ FROM node:16-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# Install PM2 globally
+# RUN npm install --global pm2
 # Install deps
 COPY package.json package-lock.json* ./
 RUN npm ci
@@ -36,4 +38,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 EXPOSE 3000
 ENV PORT 3000
-CMD ["node", "server.js"]
+# Run npm start script with PM2 when container starts
+# CMD [ "pm2-runtime", "npm", "--", "start" ]
+CMD [ "node", "server.js" ]
